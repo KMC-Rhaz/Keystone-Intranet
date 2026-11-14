@@ -1,0 +1,74 @@
+@model Keystone.Intranet.Web.Areas.Admin.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = T.Get("nav.dashboard", Current.Language);
+    var feedUrl = Url.Action("Activity", "Dashboard", new { area = "Admin" });
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@T.Get("nav.dashboard", Current.Language)</h1>
+    <p class="ks-subtitle">Live overview across all companies</p>
+  </div>
+</div>
+
+<div class="ks-stack">
+  <div class="ks-grid">
+    <section class="ks-card">
+      <div class="ks-muted">Requests waiting</div>
+      <div class="ks-stat">@Model.Metrics.PendingRequests</div>
+    </section>
+    <section class="ks-card">
+      <div class="ks-muted">People waiting for access</div>
+      <div class="ks-stat">@Model.Metrics.PendingUsers</div>
+    </section>
+    <section class="ks-card">
+      <div class="ks-muted">Returned for update</div>
+      <div class="ks-stat">@Model.Metrics.ReturnedRequests</div>
+    </section>
+  </div>
+
+  <div class="ks-grid-2">
+    <section class="ks-card ks-stack">
+      <h2 class="ks-card-title">Waiting by type</h2>
+      @if (Model.Metrics.PendingByType.Count == 0)
+      {
+        <p class="ks-muted">Nothing waiting right now.</p>
+      }
+      else
+      {
+        foreach (var row in Model.Metrics.PendingByType)
+        {
+          <div class="ks-kv">
+            <div class="ks-kv-label">@row.DefinitionName</div>
+            <div class="ks-kv-value">@row.Count</div>
+          </div>
+        }
+      }
+    </section>
+
+    <section class="ks-card ks-stack">
+      <h2 class="ks-card-title">Longest waiting</h2>
+      @if (Model.Metrics.LongestWaiting.Count == 0)
+      {
+        <p class="ks-muted">No pending requests.</p>
+      }
+      else
+      {
+        foreach (var item in Model.Metrics.LongestWaiting)
+        {
+          <div class="ks-kv">
+            <div class="ks-kv-label">@item.ReferenceNo</div>
+            <div class="ks-kv-value">@item.DefinitionName - @item.RequesterName (@item.HoursWaiting h)</div>
+          </div>
+        }
+      }
+    </section>
+  </div>
+
+  <section class="ks-card ks-stack">
+    <h2 class="ks-card-title">Recent activity</h2>
+    <div hx-get="@feedUrl" hx-trigger="every 30s" hx-swap="innerHTML">
+      <partial name="_ActivityFeed" model="Model.Activity" />
+    </div>
+  </section>
+</div>

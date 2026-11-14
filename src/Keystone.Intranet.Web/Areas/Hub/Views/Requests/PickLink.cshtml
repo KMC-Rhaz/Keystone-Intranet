@@ -1,0 +1,36 @@
+@model Keystone.Intranet.Web.Areas.Hub.ViewModels.LinkPickerViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@Model.Name</h1>
+    <p class="ks-subtitle">@T.Get("hub.choose_advance", Current.Language)</p>
+  </div>
+</div>
+
+@if (Model.Items.Count == 0)
+{
+  <section class="ks-card ks-stack">
+    <p class="ks-muted">@T.Get("hub.no_advances", Current.Language)</p>
+    <div>
+      <a class="ks-btn ks-btn-ghost" asp-area="Hub" asp-controller="Home" asp-action="Index">@T.Get("nav.hub", Current.Language)</a>
+    </div>
+  </section>
+}
+else
+{
+  <div class="ks-list">
+    @foreach (var item in Model.Items)
+    {
+      <a class="ks-row" asp-area="Hub" asp-controller="Requests" asp-action="New" asp-route-key="@Model.DefinitionKey" asp-route-linked="@item.Id">
+        <div>
+          <strong>@item.ReferenceNo</strong>
+          <div class="ks-muted">@item.SubmittedDate</div>
+        </div>
+        <span class="ks-btn ks-btn-ghost ks-btn-sm">@T.Get("hub.open_form", Current.Language)</span>
+      </a>
+    }
+  </div>
+}

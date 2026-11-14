@@ -1,0 +1,16 @@
+@using System.Text.Json
+@model Keystone.Intranet.Web.Areas.Hub.ViewModels.FormViewModel
+@{
+    ViewData["Title"] = Model.Name;
+    var json = JsonSerializer.Serialize(Model, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+    var uploadUrl = Url.Action("Upload", "Files", new { area = "Hub" });
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@Model.Name</h1>
+    <p class="ks-subtitle">@Model.Description</p>
+  </div>
+</div>
+
+<div id="ks-form-root" data-model="@json" data-upload-url="@uploadUrl"></div>

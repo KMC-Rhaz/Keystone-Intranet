@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = $"Error {ViewData["StatusCode"]}";
+}
+
+<div class="ks-auth-wrap">
+  <section class="ks-card ks-stack">
+    <h1 class="ks-title">@ViewData["StatusCode"]</h1>
+    <p>@ViewData["ErrorMessage"]</p>
+    <a class="ks-btn ks-btn-ghost" asp-area="Hub" asp-controller="Home" asp-action="Index">@T.Get("nav.hub", Current.Language)</a>
+  </section>
+</div>

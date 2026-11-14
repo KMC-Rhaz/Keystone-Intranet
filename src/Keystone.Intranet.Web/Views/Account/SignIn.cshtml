@@ -1,0 +1,41 @@
+@model Keystone.Intranet.Web.Models.SignInViewModel
+@{
+    ViewData["Title"] = T.Get("auth.sign_in_title", Current.Language);
+}
+
+<div class="ks-auth-wrap">
+  <section class="ks-card ks-stack">
+    <div>
+      <h1 class="ks-title">@T.Get("auth.sign_in_title", Current.Language)</h1>
+      <p class="ks-subtitle">@T.Get("auth.sign_in_subtitle", Current.Language)</p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+      <p class="ks-field-error">@Model.ErrorMessage</p>
+    }
+
+    @if (Model.GoogleEnabled)
+    {
+      <form asp-controller="Account" asp-action="GoogleLogin" method="post" hx-boost="false">
+        <button type="submit" class="ks-btn ks-btn-primary">@T.Get("auth.sign_in_google", Current.Language)</button>
+      </form>
+    }
+
+    @if (Model.DevSignInEnabled)
+    {
+      <form asp-controller="Account" asp-action="DevSignIn" method="post" class="ks-stack" hx-boost="false">
+        <p class="ks-muted">Development sign-in (Google OAuth not configured yet)</p>
+        <div class="ks-field">
+          <label class="ks-label" for="dev-email">Email</label>
+          <input id="dev-email" class="ks-input" type="email" name="email" value="admin@keystone.local" required />
+        </div>
+        <div class="ks-field">
+          <label class="ks-label" for="dev-name">Display name</label>
+          <input id="dev-name" class="ks-input" type="text" name="displayName" value="Keystone Admin" />
+        </div>
+        <button type="submit" class="ks-btn ks-btn-gold">Sign in locally</button>
+      </form>
+    }
+  </section>
+</div>

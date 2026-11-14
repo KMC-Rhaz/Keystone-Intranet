@@ -1,0 +1,75 @@
+@using System.Text.Json
+@model Keystone.Intranet.Web.Areas.Admin.ViewModels.PendingUsersViewModel
+@{
+    ViewData["Title"] = T.Get("nav.users", Current.Language);
+    var approveUrl = Url.Action("Approve", "Users", new { area = "Admin" });
+    var rejectUrl = Url.Action("Reject", "Users", new { area = "Admin" });
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@T.Get("nav.users", Current.Language)</h1>
+    <p class="ks-subtitle">Approve new people and assign their companies and roles</p>
+  </div>
+</div>
+
+@if (Model.Users.Count == 0)
+{
+  <section class="ks-card">
+    <p class="ks-muted">No one is waiting for approval right now.</p>
+  </section>
+}
+else
+{
+  <div class="ks-stack">
+    @foreach (var user in Model.Users)
+    {
+      var rejectPayload = JsonSerializer.Serialize(new { userId = user.Id, expectedVersion = user.Version });
+      var confirmId = $"ks-reject-user-{user.Id}";
+
+      <section class="ks-card ks-stack" data-user-card="1">
+        <div>
+          <h2 class="ks-card-title">@user.DisplayName</h2>
+          <p class="ks-card-desc">@user.Email - signed in @user.SignedUpAt</p>
+        </div>
+
+        <div class="ks-grid-2">
+          <div>
+            <div class="ks-label">Companies</div>
+            @foreach (var company in Model.Companies)
+            {
+              <label class="ks-check-row">
+                <input type="checkbox" name="companyIds" value="@company.Key" />
+                <span>@company.Label</span>
+              </label>
+            }
+          </div>
+          <div>
+            <div class="ks-label">Extra roles (everyone gets Employee)</div>
+            @foreach (var role in Model.Roles)
+            {
+              <label class="ks-check-row">
+                <input type="checkbox" name="roleKeys" value="@role.Key" />
+                <span>@role.Label</span>
+              </label>
+            }
+          </div>
+        </div>
+
+        <div class="ks-actions">
+          <button type="button" class="ks-btn ks-btn-gold"
+                  data-user-approve="@approveUrl" data-user-id="@user.Id" data-version="@user.Version">Approve access</button>
+          <button type="button" class="ks-btn ks-btn-ghost" data-confirm-open="@confirmId">Decline</button>
+        </div>
+
+        <div id="@confirmId" class="ks-confirm ks-hidden">
+          <p>Decline access for @user.DisplayName?</p>
+          <div class="ks-actions">
+            <button type="button" class="ks-btn ks-btn-danger ks-btn-sm" data-confirm-post="@rejectUrl" data-payload="@rejectPayload">Yes, decline</button>
+            <button type="button" class="ks-btn ks-btn-ghost ks-btn-sm" data-confirm-close="@confirmId">Cancel</button>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+}

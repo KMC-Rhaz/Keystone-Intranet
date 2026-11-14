@@ -1,3 +1,11 @@
 <Solution>
-  <Project Path="keystone-intranet/keystone-intranet.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/Keystone.Intranet.Core/Keystone.Intranet.Core.csproj" />
+    <Project Path="src/Keystone.Intranet.Application/Keystone.Intranet.Application.csproj" />
+    <Project Path="src/Keystone.Intranet.Infrastructure/Keystone.Intranet.Infrastructure.csproj" />
+    <Project Path="src/Keystone.Intranet.Web/Keystone.Intranet.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Keystone.Intranet.Application.Tests/Keystone.Intranet.Application.Tests.csproj" />
+  </Folder>
 </Solution>

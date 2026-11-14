@@ -1,0 +1,33 @@
+@model IReadOnlyList<Keystone.Intranet.Web.Areas.Admin.ViewModels.ApprovalListItemViewModel>
+@{
+    ViewData["Title"] = T.Get("nav.approvals", Current.Language);
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@T.Get("nav.approvals", Current.Language)</h1>
+    <p class="ks-subtitle">Requests waiting for a decision</p>
+  </div>
+</div>
+
+@if (Model.Count == 0)
+{
+  <section class="ks-card">
+    <p class="ks-muted">All caught up. No requests are waiting right now.</p>
+  </section>
+}
+else
+{
+  <div class="ks-list">
+    @foreach (var item in Model)
+    {
+      <a class="ks-row" asp-area="Admin" asp-controller="Approvals" asp-action="Review" asp-route-id="@item.Id">
+        <div>
+          <strong>@item.ReferenceNo</strong> - @item.DefinitionName
+          <div class="ks-muted">@item.RequesterName (@item.CompanyName) - @item.SubmittedDate</div>
+        </div>
+        <span class="ks-btn ks-btn-ghost ks-btn-sm">Review</span>
+      </a>
+    }
+  </div>
+}

@@ -1,0 +1,82 @@
+@using System.Text.Json
+@model Keystone.Intranet.Web.Areas.Hub.ViewModels.RequestDetailViewModel
+@{
+    ViewData["Title"] = Model.ReferenceNo;
+    var cancelPayload = JsonSerializer.Serialize(new { requestId = Model.Id, expectedVersion = Model.Version });
+    var cancelUrl = Url.Action("Cancel", "Requests", new { area = "Hub" });
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@Model.ReferenceNo - @Model.DefinitionName</h1>
+    <p class="ks-subtitle">@Model.RequesterName - @Model.SubmittedAt</p>
+  </div>
+  <partial name="_StatusBadge" model="(Model.Status, Model.StatusLabel)" />
+</div>
+
+<div class="ks-stack">
+  <section class="ks-card">
+    @foreach (var answer in Model.Answers)
+    {
+      <div class="ks-kv">
+        <div class="ks-kv-label">@answer.Label</div>
+        <div class="ks-kv-value">@answer.Value</div>
+      </div>
+    }
+
+    @if (Model.Attachments.Count > 0)
+    {
+      <div class="ks-kv">
+        <div class="ks-kv-label">Attachments</div>
+        <div class="ks-kv-value ks-file-list">
+          @foreach (var file in Model.Attachments)
+          {
+            <a class="ks-file-chip" asp-area="Hub" asp-controller="Files" asp-action="Download" asp-route-id="@file.Id" hx-boost="false">
+              <span>@file.Name</span>
+              <span class="ks-muted">@(Math.Max(1, file.LengthBytes / 1024)) KB</span>
+            </a>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="ks-actions">
+      @if (Model.CanEdit)
+      {
+        <a class="ks-btn ks-btn-gold" asp-area="Hub" asp-controller="Requests" asp-action="Edit" asp-route-id="@Model.Id">Edit and resubmit</a>
+      }
+      @if (Model.CanCancel)
+      {
+        <button type="button" class="ks-btn ks-btn-ghost" data-confirm-open="ks-cancel-confirm">@T.Get("request.cancel", Current.Language)</button>
+      }
+    </div>
+
+    @if (Model.CanCancel)
+    {
+      <div id="ks-cancel-confirm" class="ks-confirm ks-hidden">
+        <p>@T.Get("request.cancel_confirm", Current.Language)</p>
+        <div class="ks-actions">
+          <button type="button" class="ks-btn ks-btn-danger ks-btn-sm" data-confirm-post="@cancelUrl" data-payload="@cancelPayload">Yes, cancel</button>
+          <button type="button" class="ks-btn ks-btn-ghost ks-btn-sm" data-confirm-close="ks-cancel-confirm">Keep request</button>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="ks-card ks-stack">
+    <h2 class="ks-card-title">History</h2>
+    @foreach (var item in Model.History)
+    {
+      <div class="ks-kv">
+        <div class="ks-kv-label">@item.At</div>
+        <div class="ks-kv-value">
+          <strong>@item.Action</strong> by @item.ActorName
+          @if (!string.IsNullOrEmpty(item.Comment))
+          {
+            <div class="ks-muted">@item.Comment</div>
+          }
+        </div>
+      </div>
+    }
+  </section>
+</div>

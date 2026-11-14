@@ -1,0 +1,36 @@
+@model Keystone.Intranet.Web.Areas.Hub.ViewModels.MyRequestsViewModel
+@{
+    ViewData["Title"] = T.Get("nav.requests", Current.Language);
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@T.Get("nav.requests", Current.Language)</h1>
+  </div>
+  <a class="ks-btn ks-btn-gold" asp-area="Hub" asp-controller="Home" asp-action="Index">@T.Get("nav.hub", Current.Language)</a>
+</div>
+
+@if (Model.Items.Count == 0)
+{
+  <section class="ks-card ks-stack">
+    <p class="ks-muted">You have not sent any requests yet.</p>
+    <div>
+      <a class="ks-btn ks-btn-primary" asp-area="Hub" asp-controller="Home" asp-action="Index">@T.Get("nav.hub", Current.Language)</a>
+    </div>
+  </section>
+}
+else
+{
+  <div class="ks-list">
+    @foreach (var item in Model.Items)
+    {
+      <a class="ks-row" asp-area="Hub" asp-controller="Requests" asp-action="Detail" asp-route-id="@item.Id">
+        <div>
+          <strong>@item.ReferenceNo</strong> - @item.DefinitionName
+          <div class="ks-muted">@item.SubmittedDate</div>
+        </div>
+        <partial name="_StatusBadge" model="(item.Status, item.StatusLabel)" />
+      </a>
+    }
+  </div>
+}

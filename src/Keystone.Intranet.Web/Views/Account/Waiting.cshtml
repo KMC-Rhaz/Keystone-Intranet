@@ -1,0 +1,19 @@
+@model Keystone.Intranet.Web.Models.WaitingViewModel
+@{
+    ViewData["Title"] = T.Get("auth.waiting_title", Current.Language);
+}
+
+<div class="ks-auth-wrap">
+  <section class="ks-card ks-stack">
+    <h1 class="ks-title">@T.Get("auth.waiting_title", Current.Language)</h1>
+    <p class="ks-muted">@Model.DisplayName (@Model.Email)</p>
+    @if (Model.Status == UserStatuses.Rejected)
+    {
+      <p>@T.Get("auth.rejected_body", Current.Language)</p>
+    }
+    else
+    {
+      <p>@T.Get("auth.waiting_body", Current.Language)</p>
+    }
+  </section>
+</div>

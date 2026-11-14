@@ -1,0 +1,25 @@
+/* subtle transform and opacity motion honoring reduced-motion */
+@keyframes ksEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ksToastIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ks-enter {
+  animation: ksEnter var(--ks-base) var(--ks-ease) both;
+}
+
+.ks-toast {
+  animation: ksToastIn var(--ks-fast) var(--ks-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ks-enter, .ks-toast, .ks-card-link, .ks-btn, .ks-nav-link {
+    animation: none;
+    transition: none;
+  }
+}

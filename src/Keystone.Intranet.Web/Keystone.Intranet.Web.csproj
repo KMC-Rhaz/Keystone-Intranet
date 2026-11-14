@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>Keystone.Intranet.Web</RootNamespace>
+    <UserSecretsId>keystone-intranet-web-2f1c7a4e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Keystone.Intranet.Application\Keystone.Intranet.Application.csproj" />
+    <ProjectReference Include="..\Keystone.Intranet.Infrastructure\Keystone.Intranet.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

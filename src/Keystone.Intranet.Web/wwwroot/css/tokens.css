@@ -1,0 +1,36 @@
+/* only this file holds raw color values */
+:root {
+  --ks-navy: #1E2B3A;
+  --ks-navy-soft: #2A3B4F;
+  --ks-gold: #C08A2E;
+  --ks-gold-soft: #F7EFE0;
+  --ks-limestone: #F4F2EE;
+  --ks-white: #FFFFFF;
+  --ks-border: #E2DDD5;
+  --ks-text: #1E2B3A;
+  --ks-muted: #5B6672;
+  --ks-success: #2F7D5B;
+  --ks-success-soft: #E8F4EE;
+  --ks-warning: #C08A2E;
+  --ks-warning-soft: #F7EFE0;
+  --ks-danger: #B5483B;
+  --ks-danger-soft: #FBECEA;
+  --ks-info: #2C5E8A;
+  --ks-info-soft: #EAF1F8;
+  --ks-company-tint: #C08A2E;
+  --ks-radius: 16px;
+  --ks-radius-sm: 10px;
+  --ks-shadow: 0 6px 24px rgba(30, 43, 58, 0.08);
+  --ks-shadow-sm: 0 2px 8px rgba(30, 43, 58, 0.06);
+  --ks-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ks-fast: 160ms;
+  --ks-base: 260ms;
+}
+
+body[data-company="keystone"] { --ks-company-tint: #C08A2E; }
+body[data-company="j3m"] { --ks-company-tint: #4E9A51; }
+body[data-company="ktweens"] { --ks-company-tint: #D97742; }
+body[data-company="travellovers"] { --ks-company-tint: #3B82B6; }
+body[data-company="printingdistrict"] { --ks-company-tint: #C85A82; }
+body[data-company="infin8"] { --ks-company-tint: #D49A2A; }
+body[data-company="bluearth"] { --ks-company-tint: #2D9C8F; }

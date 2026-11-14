@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Keystone.Intranet.Core</RootNamespace>
+  </PropertyGroup>
+
+</Project>

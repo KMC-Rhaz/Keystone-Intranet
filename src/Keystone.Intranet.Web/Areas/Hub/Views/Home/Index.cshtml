@@ -1,0 +1,29 @@
+@model Keystone.Intranet.Web.Areas.Hub.ViewModels.HubIndexViewModel
+@{
+    ViewData["Title"] = T.Get("nav.hub", Current.Language);
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@T.Get("hub.title", Current.Language)</h1>
+    <p class="ks-subtitle">@Model.CompanyName - @T.Get("hub.subtitle", Current.Language)</p>
+  </div>
+</div>
+
+<div class="ks-grid">
+  @foreach (var card in Model.Cards)
+  {
+    <a class="ks-card ks-card-link" asp-area="Hub" asp-controller="Requests" asp-action="New" asp-route-key="@card.Key">
+      <div class="ks-stack">
+        <span class="ks-icon-badge" aria-hidden="true">
+          <svg class="ks-icon"><use href="/img/icons.svg#icon-@card.Icon"></use></svg>
+        </span>
+        <div>
+          <h2 class="ks-card-title">@card.Name</h2>
+          <p class="ks-card-desc">@card.Description</p>
+        </div>
+      </div>
+      <span class="ks-btn ks-btn-ghost ks-btn-sm">@T.Get("hub.open_form", Current.Language)</span>
+    </a>
+  }
+</div>

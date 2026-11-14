@@ -1,0 +1,97 @@
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var lang = Current.Language;
+    var companyKey = Current.ActiveCompany?.Key ?? "keystone";
+    var csrf = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="@lang">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="@csrf" />
+  <title>@ViewData["Title"] - @T.Get("app.title", lang)</title>
+  <link rel="stylesheet" href="~/css/tokens.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
+  <script src="~/js/vendor/htmx.min.js" defer></script>
+  <script src="~/js/toast.js" asp-append-version="true" defer></script>
+  <script src="~/js/app.js" asp-append-version="true" defer></script>
+  <script src="~/js/form-renderer.js" asp-append-version="true" defer></script>
+</head>
+<body data-company="@companyKey" hx-boost="true" hx-target="#page" hx-select="#page" hx-swap="outerHTML transition:true">
+  <header class="ks-header">
+    <div class="ks-header-inner">
+      <a class="ks-brand" asp-area="Hub" asp-controller="Home" asp-action="Index">
+        <img class="ks-brand-logo" src="~/img/companies/keystone.svg" alt="Keystone" />
+        <span>@(Current.ActiveCompany?.ShortName ?? T.Get("app.title", lang))</span>
+      </a>
+
+      @if (Current.IsApproved)
+      {
+        <nav class="ks-nav" aria-label="Main navigation">
+          <a class="ks-nav-link @(area == "Hub" && controller == "Home" ? "is-active" : "")"
+             asp-area="Hub" asp-controller="Home" asp-action="Index">@T.Get("nav.hub", lang)</a>
+          <a class="ks-nav-link @(area == "Hub" && controller == "Requests" ? "is-active" : "")"
+             asp-area="Hub" asp-controller="Requests" asp-action="Index">@T.Get("nav.requests", lang)</a>
+          @if (Current.HasPermission(PermissionCodes.RequestApprove))
+          {
+            <a class="ks-nav-link @(area == "Admin" && controller == "Approvals" ? "is-active" : "")"
+               asp-area="Admin" asp-controller="Approvals" asp-action="Index">@T.Get("nav.approvals", lang)</a>
+          }
+          @if (Current.HasPermission(PermissionCodes.DashboardView))
+          {
+            <a class="ks-nav-link @(area == "Admin" && controller == "Dashboard" ? "is-active" : "")"
+               asp-area="Admin" asp-controller="Dashboard" asp-action="Index">@T.Get("nav.dashboard", lang)</a>
+          }
+          @if (Current.HasPermission(PermissionCodes.UsersManage))
+          {
+            <a class="ks-nav-link @(area == "Admin" && controller == "Users" ? "is-active" : "")"
+               asp-area="Admin" asp-controller="Users" asp-action="Index">@T.Get("nav.users", lang)</a>
+          }
+        </nav>
+      }
+
+      <div class="ks-controls">
+        @if (Current.IsApproved && Current.AvailableCompanies.Count > 1)
+        {
+          <form class="ks-inline-form" asp-area="Hub" asp-controller="Preferences" asp-action="SwitchCompany" method="post" hx-boost="false">
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
+            <select class="ks-header-select" name="companyId" aria-label="Active company" data-auto-submit="1">
+              @foreach (var company in Current.AvailableCompanies)
+              {
+                <option value="@company.Id" selected="@(company.Id == Current.ActiveCompany?.Id)">@company.ShortName</option>
+              }
+            </select>
+          </form>
+        }
+
+        <form class="ks-inline-form" asp-area="Hub" asp-controller="Preferences" asp-action="SwitchLanguage" method="post" hx-boost="false">
+          <input type="hidden" name="returnUrl" value="@returnUrl" />
+          <select class="ks-header-select" name="language" aria-label="Language" data-auto-submit="1">
+            <option value="@Languages.English" selected="@(lang == Languages.English)">EN</option>
+            <option value="@Languages.Filipino" selected="@(lang == Languages.Filipino)">FIL</option>
+          </select>
+        </form>
+
+        @if (Current.IsAuthenticated)
+        {
+          <form class="ks-inline-form" asp-area="" asp-controller="Account" asp-action="SignOutPortal" method="post" hx-boost="false">
+            <button type="submit" class="ks-btn ks-btn-ghost ks-btn-sm">@T.Get("nav.sign_out", lang)</button>
+          </form>
+        }
+      </div>
+    </div>
+  </header>
+
+  <main id="page" class="ks-page ks-enter">
+    @RenderBody()
+  </main>
+
+  <div id="ks-toast-host" class="ks-toast-host" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

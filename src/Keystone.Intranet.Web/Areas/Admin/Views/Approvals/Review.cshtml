@@ -1,0 +1,69 @@
+@model Keystone.Intranet.Web.Areas.Admin.ViewModels.ApprovalDetailViewModel
+@{
+    ViewData["Title"] = Model.Detail.ReferenceNo;
+    var approveUrl = Url.Action("Approve", "Approvals", new { area = "Admin" });
+    var rejectUrl = Url.Action("Reject", "Approvals", new { area = "Admin" });
+    var sendBackUrl = Url.Action("SendBack", "Approvals", new { area = "Admin" });
+}
+
+<div class="ks-page-head">
+  <div>
+    <h1 class="ks-title">@Model.Detail.ReferenceNo - @Model.Detail.DefinitionName</h1>
+    <p class="ks-subtitle">@Model.Detail.RequesterName (@Model.CompanyName) - @Model.Detail.SubmittedAt</p>
+  </div>
+  <partial name="_StatusBadge" model="(Model.Detail.Status, Model.Detail.StatusLabel)" />
+</div>
+
+<div class="ks-stack">
+  <section class="ks-card">
+    @foreach (var answer in Model.Detail.Answers)
+    {
+      <div class="ks-kv">
+        <div class="ks-kv-label">@answer.Label</div>
+        <div class="ks-kv-value">@answer.Value</div>
+      </div>
+    }
+
+    @if (Model.Detail.Attachments.Count > 0)
+    {
+      <div class="ks-kv">
+        <div class="ks-kv-label">Attachments</div>
+        <div class="ks-kv-value ks-file-list">
+          @foreach (var file in Model.Detail.Attachments)
+          {
+            <a class="ks-file-chip" asp-area="Hub" asp-controller="Files" asp-action="Download" asp-route-id="@file.Id" hx-boost="false">
+              <span>@file.Name</span>
+              <span class="ks-muted">@(Math.Max(1, file.LengthBytes / 1024)) KB</span>
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  @if (Model.Detail.Status == RequestStatuses.Pending)
+  {
+    <section class="ks-card ks-stack">
+      <h2 class="ks-card-title">Decision</h2>
+      @if (Model.IsOwnRequest)
+      {
+        <p class="ks-muted">You submitted this request, so another super admin needs to decide on it.</p>
+      }
+      else
+      {
+        <div class="ks-field">
+          <label class="ks-label" for="ks-decision-comment">Comment (required when rejecting or sending back)</label>
+          <textarea id="ks-decision-comment" class="ks-textarea" maxlength="1000"></textarea>
+        </div>
+        <div class="ks-actions">
+          <button type="button" class="ks-btn ks-btn-gold"
+                  data-decision-url="@approveUrl" data-request-id="@Model.Detail.Id" data-version="@Model.Detail.Version">Approve</button>
+          <button type="button" class="ks-btn ks-btn-ghost"
+                  data-decision-url="@sendBackUrl" data-request-id="@Model.Detail.Id" data-version="@Model.Detail.Version">Send back</button>
+          <button type="button" class="ks-btn ks-btn-danger"
+                  data-decision-url="@rejectUrl" data-request-id="@Model.Detail.Id" data-version="@Model.Detail.Version">Reject</button>
+        </div>
+      }
+    </section>
+  }
+</div>
